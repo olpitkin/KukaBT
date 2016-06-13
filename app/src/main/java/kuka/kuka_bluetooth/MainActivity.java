@@ -1,7 +1,8 @@
 package kuka.kuka_bluetooth;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,12 +11,10 @@ import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butterknife.OnTouch;
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.input) EditText mInputView;
     @BindView(R.id.output) EditText mOutputView;
 
     @BindView(R.id.startButton) Button mStartButton;
@@ -122,30 +121,30 @@ public class MainActivity extends ActionBarActivity {
             new BluetoothServer.IBluetoothServerListener() {
                 @Override
                 public void onStarted() {
-                    writeMessage("*** Server has started, waiting for client connection ***");
+                    Log.i("Info","Server has started, waiting for client connection");
                     mStopButton.setEnabled(true);
                     mStartButton.setEnabled(false);
                 }
 
                 @Override
                 public void onConnected() {
-                    writeMessage("*** Client has connected ***");
+                    Log.i("Info","Client connected");
                     mSendButton.setEnabled(true);
                 }
 
                 @Override
                 public void onData(byte[] data) {
-                    writeMessage(new String(data));
+                    Log.i("Message",new String(data));
                 }
 
                 @Override
                 public void onError(String message) {
-                    writeError(message);
+                    Log.i("Error",message);
                 }
 
                 @Override
                 public void onStopped() {
-                    writeMessage("*** Server has stopped ***");
+                    Log.i("Info","Server has stopped");
                     mSendButton.setEnabled(false);
                     mStopButton.setEnabled(false);
                     mStartButton.setEnabled(true);
@@ -157,7 +156,7 @@ public class MainActivity extends ActionBarActivity {
             mBluetoothServer.start();
         } catch (BluetoothServer.BluetoothServerException e) {
             e.printStackTrace();
-            writeError(e.getMessage());
+            Log.i("Error",e.getMessage().toString());
         }
     }
 
@@ -171,19 +170,11 @@ public class MainActivity extends ActionBarActivity {
             mOutputView.setText("");
         } catch (BluetoothServer.BluetoothServerException e) {
             e.printStackTrace();
-            writeError(e.getMessage());
+            Log.i("Error",e.getMessage().toString());
         } catch (IOException e) {
             e.printStackTrace();
-            writeError(e.getMessage());
+            Log.i("Error",e.getMessage().toString());
         }
     }
 
-
-    private void writeMessage(String message){
-       mInputView.setText(message + "\r\n" + mInputView.getText().toString());
-    }
-
-    private void writeError(String message){
-        writeMessage("ERROR: " + message);
-    }
 }

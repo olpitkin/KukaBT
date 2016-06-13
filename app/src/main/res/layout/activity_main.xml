@@ -5,24 +5,6 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/input"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:focusable="false"
-        android:inputType="textMultiLine"
-        android:scrollbars="vertical"
-        android:singleLine="false" />
-
-    <EditText
-        android:id="@+id/output"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:hint="text"
-        android:lines="1" />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -132,7 +114,6 @@
             android:layout_height="wrap_content"
             android:text="DR"
             android:id="@+id/dr" />
-
 
     </LinearLayout>
 </LinearLayout>
