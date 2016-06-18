@@ -15,7 +15,6 @@ import butterknife.OnTouch;
 
 public class MainActivity extends AppCompatActivity {
 
-    @BindView(R.id.output) EditText mOutputView;
 
     @BindView(R.id.startButton) Button mStartButton;
     @BindView(R.id.stopButton) Button mStopButton;
@@ -40,57 +39,69 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnTouch(R.id.ur)
-    public void ur(View view) {
+    public boolean ur(View view) {
         try {
             mBluetoothServer.send("o".getBytes());
+            return true;
         } catch (BluetoothServer.BluetoothServerException | IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @OnTouch(R.id.left)
-    public void left(View view) {
+    public boolean left(View view) {
         try {
             mBluetoothServer.send("j".getBytes());
+            return true;
         } catch (BluetoothServer.BluetoothServerException | IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @OnTouch(R.id.right)
-    public void right(View view) {
+    public boolean right(View view) {
         try {
             mBluetoothServer.send("l".getBytes());
+            return true;
         } catch (BluetoothServer.BluetoothServerException | IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @OnTouch(R.id.dl)
-    public void dl(View view) {
+    public boolean dl(View view) {
         try {
             mBluetoothServer.send("m".getBytes());
+            return true;
         } catch (BluetoothServer.BluetoothServerException | IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @OnTouch(R.id.down)
-    public void down(View view) {
+    public boolean down(View view) {
         try {
             mBluetoothServer.send(",".getBytes());
+            return true;
         } catch (BluetoothServer.BluetoothServerException | IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     @OnTouch(R.id.dr)
-    public void dr(View view) {
+    public boolean dr(View view) {
         try {
             mBluetoothServer.send(".".getBytes());
+            return true;
         } catch (BluetoothServer.BluetoothServerException | IOException e) {
             e.printStackTrace();
         }
+        return false;
     }
 
     private BluetoothServer mBluetoothServer;
@@ -164,17 +175,5 @@ public class MainActivity extends AppCompatActivity {
         mBluetoothServer.stop();
     }
 
-    public void onSendClick(View view){
-        try {
-            mBluetoothServer.send(mOutputView.getText().toString().getBytes());
-            mOutputView.setText("");
-        } catch (BluetoothServer.BluetoothServerException e) {
-            e.printStackTrace();
-            Log.i("Error",e.getMessage().toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-            Log.i("Error",e.getMessage().toString());
-        }
-    }
 
 }
