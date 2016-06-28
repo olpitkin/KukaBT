@@ -47,88 +47,17 @@ public class MainActivity extends AppCompatActivity{
 
     @BindView(R.id.startButton) Button mStartButton;
     @BindView(R.id.stopButton) Button mStopButton;
-    @BindView(R.id.sendButton) Button mSendButton;
 
     @BindView(R.id.ul) Button ul;
+    @BindView(R.id.up) Button up;
+    @BindView(R.id.ur) Button ur;
 
-    @OnTouch(R.id.up)
-    public boolean up(View view) {
-        try {
-            mBluetoothServer.send("i".getBytes());
-            return true;
-        } catch (BluetoothServer.BluetoothServerException | IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+    @BindView(R.id.left) Button left;
+    @BindView(R.id.right) Button right;
 
-    @OnTouch(R.id.ur)
-    public boolean ur(View view) {
-        try {
-            mBluetoothServer.send("o".getBytes());
-            return false;
-        } catch (BluetoothServer.BluetoothServerException | IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    @OnTouch(R.id.left)
-    public boolean left(View view) {
-        try {
-            mBluetoothServer.send("j".getBytes());
-            mBluetoothServer.wait(1000);
-            return true;
-        } catch (BluetoothServer.BluetoothServerException | IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    @OnTouch(R.id.right)
-    public boolean right(View view) {
-        try {
-            mBluetoothServer.send("l".getBytes());
-            return true;
-        } catch (BluetoothServer.BluetoothServerException | IOException e) {
-            e.printStackTrace();}
-        return false;
-    }
-
-    @OnTouch(R.id.dl)
-    public boolean dl(View view) {
-        try {
-            mBluetoothServer.send("m".getBytes());
-            return true;
-        } catch (BluetoothServer.BluetoothServerException | IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    @OnTouch(R.id.down)
-    public boolean down(View view) {
-        try {
-            mBluetoothServer.send(",".getBytes());
-            return true;
-        } catch (BluetoothServer.BluetoothServerException | IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    @OnTouch(R.id.dr)
-    public boolean dr(View view) {
-        try {
-            mBluetoothServer.send(".".getBytes());
-            return true;
-        } catch (BluetoothServer.BluetoothServerException | IOException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
+    @BindView(R.id.dl) Button dl;
+    @BindView(R.id.down) Button down;
+    @BindView(R.id.dr) Button dr;
 
     private BluetoothServer mBluetoothServer;
 
@@ -140,6 +69,70 @@ public class MainActivity extends AppCompatActivity{
 
         mBluetoothServer = new BluetoothServer();
         mBluetoothServer.setListener(mBluetoothServerListener);
+
+        initListners();
+        handler = new Handler();
+        handler.post(runnableCode);
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        mBluetoothServer.stop();
+        mBluetoothServer = null;
+    }
+
+    /**
+     * Bluetooth server events listener.
+     */
+    private BluetoothServer.IBluetoothServerListener mBluetoothServerListener =
+            new BluetoothServer.IBluetoothServerListener() {
+                @Override
+                public void onStarted() {
+                    Log.i("Info","Server has started, waiting for client connection");
+                    mStopButton.setEnabled(true);
+                    mStartButton.setEnabled(false);
+                }
+
+                @Override
+                public void onConnected() {
+                    Log.i("Info","Client connected");
+            }
+
+                @Override
+                public void onData(byte[] data) {
+                    Log.i("Message",new String(data));
+                }
+
+                @Override
+                public void onError(String message) {
+                    Log.i("Error",message);
+                }
+
+                @Override
+                public void onStopped() {
+                    Log.i("Info","Server has stopped");
+                    mStopButton.setEnabled(false);
+                    mStartButton.setEnabled(true);
+                }
+            };
+
+    public void onStartClick(View view){
+        try {
+            mBluetoothServer.start();
+        } catch (BluetoothServer.BluetoothServerException e) {
+            e.printStackTrace();
+            Log.i("Error",e.getMessage().toString());
+        }
+    }
+
+    public void onStopClick(View view){
+        mBluetoothServer.stop();
+    }
+
+    private void initListners(){
 
         ul.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -178,69 +171,264 @@ public class MainActivity extends AppCompatActivity{
             }
         });
 
+        up.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
 
-        handler = new Handler();
-// Start the initial runnable task by posting through the handler
-        handler.post(runnableCode);
+                Thread t =  new Thread(new Runnable(){
+                    public void run(){
+                        while(actionDownFlag.get()){
+                            if (tasks.isEmpty()) {
+                                tasks.add(new Thread(new Runnable(){
+                                    public void run(){
+                                        try {
+                                            mBluetoothServer.send("i".getBytes());
+                                        } catch (BluetoothServer.BluetoothServerException | IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }));
+                            }
+                            //maybe sleep some times to not polute your logcat
+                        }
+                        //Log.d(VIEW_LOG_TAG, "Not Touching");
+                    }
+                });
 
-    }
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    actionDownFlag.set(true);
+                    t.start();
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
 
-        mBluetoothServer.stop();
-        mBluetoothServer = null;
-    }
-
-    /**
-     * Bluetooth server events listener.
-     */
-    private BluetoothServer.IBluetoothServerListener mBluetoothServerListener =
-            new BluetoothServer.IBluetoothServerListener() {
-                @Override
-                public void onStarted() {
-                    Log.i("Info","Server has started, waiting for client connection");
-                    mStopButton.setEnabled(true);
-                    mStartButton.setEnabled(false);
                 }
-
-                @Override
-                public void onConnected() {
-                    Log.i("Info","Client connected");
-                    mSendButton.setEnabled(true);
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    actionDownFlag.set(false);
                 }
+                return true;
+            }
+        });
 
-                @Override
-                public void onData(byte[] data) {
-                    Log.i("Message",new String(data));
+        ur.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                Thread t =  new Thread(new Runnable(){
+                    public void run(){
+                        while(actionDownFlag.get()){
+                            if (tasks.isEmpty()) {
+                                tasks.add(new Thread(new Runnable(){
+                                    public void run(){
+                                        try {
+                                            mBluetoothServer.send("o".getBytes());
+                                        } catch (BluetoothServer.BluetoothServerException | IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }));
+                            }
+                            //maybe sleep some times to not polute your logcat
+                        }
+                        //Log.d(VIEW_LOG_TAG, "Not Touching");
+                    }
+                });
+
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    actionDownFlag.set(true);
+                    t.start();
+
+
                 }
-
-                @Override
-                public void onError(String message) {
-                    Log.i("Error",message);
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    actionDownFlag.set(false);
                 }
+                return true;
+            }
+        });
 
-                @Override
-                public void onStopped() {
-                    Log.i("Info","Server has stopped");
-                    mSendButton.setEnabled(false);
-                    mStopButton.setEnabled(false);
-                    mStartButton.setEnabled(true);
+        left.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                Thread t =  new Thread(new Runnable(){
+                    public void run(){
+                        while(actionDownFlag.get()){
+                            if (tasks.isEmpty()) {
+                                tasks.add(new Thread(new Runnable(){
+                                    public void run(){
+                                        try {
+                                            mBluetoothServer.send("j".getBytes());
+                                        } catch (BluetoothServer.BluetoothServerException | IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }));
+                            }
+                            //maybe sleep some times to not polute your logcat
+                        }
+                        //Log.d(VIEW_LOG_TAG, "Not Touching");
+                    }
+                });
+
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    actionDownFlag.set(true);
+                    t.start();
+
+
                 }
-            };
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    actionDownFlag.set(false);
+                }
+                return true;
+            }
+        });
 
-    public void onStartClick(View view){
-        try {
-            mBluetoothServer.start();
-        } catch (BluetoothServer.BluetoothServerException e) {
-            e.printStackTrace();
-            Log.i("Error",e.getMessage().toString());
-        }
-    }
+        right.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
 
-    public void onStopClick(View view){
-        mBluetoothServer.stop();
+                Thread t =  new Thread(new Runnable(){
+                    public void run(){
+                        while(actionDownFlag.get()){
+                            if (tasks.isEmpty()) {
+                                tasks.add(new Thread(new Runnable(){
+                                    public void run(){
+                                        try {
+                                            mBluetoothServer.send("l".getBytes());
+                                        } catch (BluetoothServer.BluetoothServerException | IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }));
+                            }
+                            //maybe sleep some times to not polute your logcat
+                        }
+                        //Log.d(VIEW_LOG_TAG, "Not Touching");
+                    }
+                });
+
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    actionDownFlag.set(true);
+                    t.start();
+
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    actionDownFlag.set(false);
+                }
+                return true;
+            }
+        });
+
+        dr.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                Thread t =  new Thread(new Runnable(){
+                    public void run(){
+                        while(actionDownFlag.get()){
+                            if (tasks.isEmpty()) {
+                                tasks.add(new Thread(new Runnable(){
+                                    public void run(){
+                                        try {
+                                            mBluetoothServer.send("m".getBytes());
+                                        } catch (BluetoothServer.BluetoothServerException | IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }));
+                            }
+                            //maybe sleep some times to not polute your logcat
+                        }
+                        //Log.d(VIEW_LOG_TAG, "Not Touching");
+                    }
+                });
+
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    actionDownFlag.set(true);
+                    t.start();
+
+
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    actionDownFlag.set(false);
+                }
+                return true;
+            }
+        });
+
+        down.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                Thread t =  new Thread(new Runnable(){
+                    public void run(){
+                        while(actionDownFlag.get()){
+                            if (tasks.isEmpty()) {
+                                tasks.add(new Thread(new Runnable(){
+                                    public void run(){
+                                        try {
+                                            mBluetoothServer.send(",".getBytes());
+                                        } catch (BluetoothServer.BluetoothServerException | IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }));
+                            }
+                            //maybe sleep some times to not polute your logcat
+                        }
+                        //Log.d(VIEW_LOG_TAG, "Not Touching");
+                    }
+                });
+
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    actionDownFlag.set(true);
+                    t.start();
+
+
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    actionDownFlag.set(false);
+                }
+                return true;
+            }
+        });
+
+        dl.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                Thread t =  new Thread(new Runnable(){
+                    public void run(){
+                        while(actionDownFlag.get()){
+                            if (tasks.isEmpty()) {
+                                tasks.add(new Thread(new Runnable(){
+                                    public void run(){
+                                        try {
+                                            mBluetoothServer.send(".".getBytes());
+                                        } catch (BluetoothServer.BluetoothServerException | IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }));
+                            }
+                            //maybe sleep some times to not polute your logcat
+                        }
+                        //Log.d(VIEW_LOG_TAG, "Not Touching");
+                    }
+                });
+
+                if(event.getAction()==MotionEvent.ACTION_DOWN){
+                    actionDownFlag.set(true);
+                    t.start();
+
+
+                }
+                if(event.getAction()==MotionEvent.ACTION_UP){
+                    actionDownFlag.set(false);
+                }
+                return true;
+            }
+        });
+
     }
 
 
