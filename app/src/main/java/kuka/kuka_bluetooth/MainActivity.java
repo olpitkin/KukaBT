@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnTouch;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -33,6 +32,7 @@ public class MainActivity extends AppCompatActivity{
     @BindView(R.id.textView5) TextView textView5;
     JoyStickClass js;
     ImageView image_joystick, image_border;
+    private TactileFeedbackPlayer vibrator = new TactileFeedbackPlayer();
 
     // Define the code block to be executed
     private Runnable runnableCode = new Runnable() {
@@ -67,6 +67,10 @@ public class MainActivity extends AppCompatActivity{
     @BindView(R.id.dl) Button dl;
     @BindView(R.id.down) Button down;
     @BindView(R.id.dr) Button dr;
+    @BindView(R.id.vibrConnection) Button mVibrConnectButton;
+    @BindView(R.id.stopBtn) Button mStoppingButton;
+    @BindView(R.id.crossBtn) Button mCrossingButton;
+
 
     private BluetoothServer mBluetoothServer;
 
@@ -191,6 +195,21 @@ public class MainActivity extends AppCompatActivity{
         mBluetoothServer.stop();
     }
 
+    public void onVibrConClick(View view){
+        vibrator.connect();
+        if(vibrator.udp_connected){
+            mVibrConnectButton.setText("Disconnect Vibration");
+        }
+        else mVibrConnectButton.setText("Connect Vibration");
+    }
+    public void onStopping(View view){
+        if(vibrator.udp_connected)vibrator.sendUDP("!PlayPattern,stop_ahead", 600);
+    }
+
+    public void onCrossing(View view){
+        if(vibrator.udp_connected)vibrator.sendUDP("!PlayPattern,crossing_ahead", 800);
+    }
+
     private void initListners(){
 
         ul.setOnTouchListener(new View.OnTouchListener() {
@@ -205,6 +224,7 @@ public class MainActivity extends AppCompatActivity{
                                     public void run(){
                                         try {
                                             mBluetoothServer.send("u".getBytes());
+                                            if(vibrator.udp_connected)vibrator.sendUDP("!PlayPattern,move_left", 250);
                                         } catch (BluetoothServer.BluetoothServerException | IOException e) {
                                             e.printStackTrace();
                                         }
@@ -279,6 +299,7 @@ public class MainActivity extends AppCompatActivity{
                                     public void run(){
                                         try {
                                             mBluetoothServer.send("o".getBytes());
+                                            if(vibrator.udp_connected)vibrator.sendUDP("!PlayPattern,move_right", 250);
                                         } catch (BluetoothServer.BluetoothServerException | IOException e) {
                                             e.printStackTrace();
                                         }
@@ -316,6 +337,7 @@ public class MainActivity extends AppCompatActivity{
                                     public void run(){
                                         try {
                                             mBluetoothServer.send("j".getBytes());
+                                            if(vibrator.udp_connected)vibrator.sendUDP("!PlayPattern,move_left", 250);
                                         } catch (BluetoothServer.BluetoothServerException | IOException e) {
                                             e.printStackTrace();
                                         }
@@ -353,6 +375,7 @@ public class MainActivity extends AppCompatActivity{
                                     public void run(){
                                         try {
                                             mBluetoothServer.send("l".getBytes());
+                                            if(vibrator.udp_connected)vibrator.sendUDP("!PlayPattern,move_right", 250);
                                         } catch (BluetoothServer.BluetoothServerException | IOException e) {
                                             e.printStackTrace();
                                         }
