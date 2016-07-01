@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,6 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:id="@+id/ll1"
+        android:layout_centerHorizontal="true"
         android:orientation="horizontal">
 
         <Button
@@ -30,144 +32,68 @@
             android:onClick="onStopClick"
             android:text="STOP"
             android:textAllCaps="true" />
-
-        <Button
-            android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:onClick="onSendClick"
-            android:text="SEND"
-            android:textAllCaps="true" />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Connect Vibration"
-            android:onClick="onVibrConClick"
-            android:id="@+id/vibrConnection" />
     </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:orientation="horizontal">
 
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="UL"
-                android:id="@+id/ul" />
-
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="UP"
-                android:id="@+id/up" />
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:text="UR"
-                android:id="@+id/ur" />
-        </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="LEFT"
-            android:id="@+id/left" />
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="RIGHT"
-            android:id="@+id/right" />
-
-        </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="DL"
-            android:id="@+id/dl" />
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="DOWN"
-            android:id="@+id/down" />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="DR"
-            android:id="@+id/dr" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="Stop ahead"
-            android:onClick="onStopping"
-            android:id="@+id/stopBtn" />
-
-        <Button
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="Crossing ahead"
-            android:onClick="onCrossing"
-            android:id="@+id/crossBtn" />
-
-    </LinearLayout>
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView3"
         android:text="Direction"
         android:textColor="#444444"
-        android:textSize="20dp" />
+        android:textSize="20dp"
+        android:layout_below="@+id/ll1"
+        android:layout_centerHorizontal="true" />
 
     <RelativeLayout
         android:id="@+id/layout_joystick"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_below="@+id/linearLayout1"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/image_button_bg" >
+        android:background="@drawable/image_button_bg"
+        android:layout_below="@+id/textView5"
+        android:layout_centerHorizontal="true">
     </RelativeLayout>
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect Vibration"
+            android:onClick="onVibrConClick"
+            android:id="@+id/vibrConnection"
+            android:layout_below="@+id/layout_joystick"
+            android:layout_centerHorizontal="true" />
 
-</LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop ahead"
+            android:onClick="onStopping"
+            android:id="@+id/stopBtn"
+            android:layout_below="@+id/fullStop"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="STOP"
+            android:onClick="onFullStop"
+            android:id="@+id/fullStop"
+            android:layout_below="@+id/crossBtn"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Crossing ahead"
+            android:onClick="onCrossing"
+            android:id="@+id/crossBtn"
+            android:layout_below="@+id/vibrConnection"
+            android:layout_centerHorizontal="true" />
+
+
+</RelativeLayout>
 
 
