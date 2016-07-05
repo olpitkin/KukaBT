@@ -18,6 +18,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity{
                         tasks.get(0).start();
                         tasks.clear();
                     }
-            handler.postDelayed(runnableCode, 2000);
+            handler.postDelayed(runnableCode, 1500);
         }
     };
 
@@ -56,6 +57,28 @@ public class MainActivity extends AppCompatActivity{
     @BindView(R.id.stopBtn) Button mStoppingButton;
     @BindView(R.id.crossBtn) Button mCrossingButton;
     @BindView(R.id.fullStop) Button mFullStop;
+
+    @OnClick(R.id.speedUp)
+    public void speedUp(Button button) {
+        try {
+            mBluetoothServer.send("q".getBytes());
+        } catch (BluetoothServer.BluetoothServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @OnClick(R.id.speedDown)
+    public void speedDown(Button button) {
+        try {
+            mBluetoothServer.send("z".getBytes());
+        } catch (BluetoothServer.BluetoothServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     private BluetoothServer mBluetoothServer;

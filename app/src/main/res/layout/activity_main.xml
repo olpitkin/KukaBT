@@ -93,6 +93,22 @@
             android:layout_below="@+id/vibrConnection"
             android:layout_centerHorizontal="true" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Speed +"
+        android:id="@+id/speedUp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SPEED -"
+        android:id="@+id/speedDown"
+        android:layout_below="@+id/stopBtn"
+        android:layout_alignParentEnd="true" />
+
 
 </RelativeLayout>
 
