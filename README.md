@@ -7,3 +7,9 @@
 
 * sudo chmod 777 /dev/rfcomm0
 * python youbot_keyboard_teleop.py
+
+
+* putty : http://www.putty.org/
+* http://www.connectify.me/
+* get ip via command "ifconfig"
+* run putty 
