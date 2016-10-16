@@ -106,7 +106,7 @@
         android:layout_height="wrap_content"
         android:text="SPEED -"
         android:id="@+id/speedDown"
-        android:layout_below="@+id/stopBtn"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
 
